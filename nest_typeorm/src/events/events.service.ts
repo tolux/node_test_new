@@ -178,6 +178,7 @@ export class EventsService {
      */
   @Get('futureevents')
   async getFutureEventWithWorkshops() {
+    const today = new Date();
     const res = await this.eventRepository
       .createQueryBuilder('event')
       .leftJoinAndMapMany(
@@ -186,6 +187,8 @@ export class EventsService {
         'workshop',
         'event.id = workshop.eventId',
       )
+      .orderBy('workshop.id', 'ASC')
+      .where('workshop.start > :today', { today })
       .getMany();
 
     return res;
