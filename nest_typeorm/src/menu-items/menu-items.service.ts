@@ -86,6 +86,18 @@ export class MenuItemsService {
     ]
   */
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    const res = await this.menuItemRepository
+      .createQueryBuilder('item')
+      .leftJoinAndMapMany(
+        'item.children',
+        MenuItem,
+        'children',
+        'item.id = children.parentId',
+      )
+      .limit(1)
+      .getMany();
+    console.log((res[0] as any).children);
+
+    return res;
   }
 }
